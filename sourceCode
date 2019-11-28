@@ -1,0 +1,134 @@
+
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class UnSold{
+
+public:
+UnSold(string NameOfShoe, int PurchasePrice ){
+	name = NameOfShoe;
+	cost = PurchasePrice;
+	return;
+}
+
+void SetName(string NameOfShoe){
+	name = NameOfShoe;
+	return;
+}
+void SetCost(int PurchasePrice){
+	cost = PurchasePrice;
+	return;
+}
+
+string GetName() const {
+	return name;
+}
+int GetCost() const{
+	return cost;
+}
+
+void PrintItem();	
+private:
+	string name;
+	int cost;
+};
+
+void UnSold::PrintItem(){
+	cout << "Name: " << this->name << " Cost: " << this->cost << endl;
+}
+
+void PrintEverything(vector<UnSold*> AllItems) {
+	unsigned int i;
+	
+	for (i=0; i<AllItems.size(); ++i) {
+		cout<< i+1 << " ";
+		(*AllItems.at(i)).PrintItem();
+	}
+
+}
+int main(){
+	//vector of pointers
+	vector<UnSold*> Inventory;
+
+	string Name;
+	int Cost; // user input of cost of item
+	string UserInput; // user input of desired function to use
+	unsigned int listPos; // position of item in the printed list
+	string usrInput; // user input to confirm if correct item
+	static int totalProfit; // profit total from all sales
+	int SaleProfit; // profit from previous sale
+	int sell; // price the item sold for
+
+	// pointers to create new item/ look up
+	UnSold* newItem = nullptr;
+	UnSold* search = nullptr; 
+
+	while ( UserInput != "quit") {
+		
+		cout << "Do you want to add, sell, print, check profits or quit?" <<endl;
+		cin >> UserInput;
+
+		if ( UserInput == "add") {
+			cout << "Enter item name: "<<endl;
+			cin >> Name;
+			cout << "Enter item cost: " << endl;
+			cin >> Cost;
+			newItem = new UnSold(Name, Cost);
+			Inventory.push_back(newItem);
+		}
+		
+		else if ( UserInput == "sell") {
+		    
+		    	PrintEverything(Inventory);
+			cout << "List Positon: ";
+			cin >> listPos;
+			if ( listPos <= Inventory.size()){
+			search = Inventory.at(listPos-1);
+			
+			cout<< "Is this the correct item? Y/N ";
+			(*Inventory.at(listPos-1)).PrintItem();
+			cin >>usrInput;
+			
+			Cost = (*Inventory.at(listPos-1)).GetCost();
+			
+			    if ((usrInput == "Y") || (usrInput == "y") || (usrInput == "yes")){
+			        cout << "What did it sell for? $";
+			        cin >> sell;
+			        
+			        totalProfit += (sell-Cost);
+			        SaleProfit = (sell-Cost);
+			        
+			        cout << "   ~Profit from this sale: $" << SaleProfit <<endl;
+			        
+			        delete search;
+			        Inventory.erase(Inventory.begin() + (listPos -1));
+			        cout << "   ~Item Sold and Removed from list position " << listPos <<endl;
+			    }
+			}
+			
+			else{
+				    cout << "Error"<<endl;
+			}
+		}
+		else if ( UserInput == "print") {
+			PrintEverything(Inventory);
+		}
+        
+        else if ((UserInput == "check") || (UserInput == "profits") || (UserInput == "check profits")){
+            cout << "Total profits: $"<< totalProfit <<endl;
+        }
+        
+		else if ( UserInput != "quit"){
+		}
+		
+			
+	}		
+
+
+
+
+return 0;
+}
+
